@@ -3,7 +3,7 @@ Memo :
 - OSA : Obfuscated strings array
 
 Notes :
-- This program may not work with all degrees of desobfuscation.
+- This program may not work with all degrees of obfuscation.
 - It makes the heavyest work but you still need to do some manually stuff to get a clean code.
 - I suggest to use a JS beautifier once the output.js file is written.
 """
