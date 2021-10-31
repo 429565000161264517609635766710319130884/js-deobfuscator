@@ -58,7 +58,8 @@ def read_code_file(path: str) -> str:
 
 def main():
     if len(sys.argv) < 2:
-        print("The input JS file is missing.\n\nUsage :\npython3 %s <source.js>" % (__file__))
+        print(
+            "The input JS file is missing.\n\nUsage :\npython3 %s <source.js>" % (__file__))
         return 1
 
     input_path = sys.argv[1]
@@ -82,16 +83,29 @@ def main():
     for reference in dico_references.findall(code):
         code = code.replace("[\"%s\"]" % (reference), ".%s" % (reference))
 
+    # Remove the extra curlybraces
+    extra_curlybraces = re.compile(
+        r"\$\{(\"|\'|\`)(([\@\!\?\,\;\:\/\\\-\|\_\[\(\)\]\{\}\#\~\&\<\>\.\=\%\^\°\§\ ]|\w)+)(\"|\'|\`)\}")
+    for s_quote, string, _, e_quote in extra_curlybraces.findall(code):
+        if len(string) > 0:
+            code = code.replace("${%s%s%s}" %
+                                (s_quote, string, e_quote), string)
+
     # Checking for any rest of unescaped string
     unescaped_strings = re.compile(
         r"(\"|\'|\`)((\\(u|x)[0-9A-F]+)+)(\"|\'|\`)")
-    for unescaped_string in unescaped_strings.findall(code):
-        unicode = unescaped_string[1]
-        quote_type = unescaped_string[0]
-        code = code.replace("%s%s%s" % (quote_type, unicode, quote_type), "\"%s\"" % (
-            unicode.encode().decode("unicode-escape")))
+    for s_quote, string, _, _, e_quote in unescaped_strings.findall(code):
+        code = code.replace("%s%s%s" % (s_quote, string, e_quote), "%s%s%s" % (s_quote,
+                                                                               string.encode().decode("unicode-escape"), e_quote))
 
-    write_code_file(code.replace("\n", " "), os.path.join("/".join(input_path.split("/")[0:-1]), "output.js"))
+    # Remove the extra empty curlybraces
+    extra_curlybraces = re.compile(r"\$\{(\"|\'|\`)(\"|\'|\`)\}")
+    for s_quote, e_quote in extra_curlybraces.findall(code):
+        code = code.replace("${%s%s}" % (s_quote, e_quote), "")
+
+    write_code_file(code.replace("\n", " "), os.path.join(
+        "/".join(input_path.split("/")[0:-1]), "output.js"))
+
     return 0
 
 
