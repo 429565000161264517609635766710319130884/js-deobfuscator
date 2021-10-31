@@ -19,7 +19,7 @@ const fs = require(strings[0])
 ```
 Can be seen as
 ```js
-const _0x1e5f=["\x66\x73"];const _0x1e6a=require(_0x1e5f[0])
+const _0x1e5f=["\x66\x73"],_0x1e6a=require(_0x1e5f[0])
 ```
 
 So, first of all, the script tries to get this array to replace references by strings themselves and then it removes the array.
