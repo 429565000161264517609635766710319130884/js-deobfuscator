@@ -1,14 +1,11 @@
 """
 Memo :
--   OSA : Obfuscated strings array
+- OSA : Obfuscated strings array
 
-Note :
-This program may not work with all degrees of desobfuscation. But there are at least twoof my GitHub pull requests where it worked :
--   https://github.com/choco8exe/chocolaterie/pull/1/commits/5cfb155c0fde05ea90d8acd195cf0a822905b0b5
--   https://github.com/Social404/Advanced-Discord-Server-Cloner/pull/3/commits/3b6f657836a96a3aef39cdb3d749fc9fbd7e8e36
-Keep in mind that the script makes the heavyest work but you still need to go ahead and check if the output source is readble.
-You may have to rewrite some piece of code.
-You may have to use a JS beautifier once the output.js file is written, because it may have a one-line JS style.
+Notes :
+- This program may not work with all degrees of desobfuscation.
+- It makes the heavyest work but you still need to do some manually stuff to get a clean code.
+- I suggest to use a JS beautifier once the output.js file is written.
 """
 
 import re
@@ -61,8 +58,7 @@ def read_code_file(path: str) -> str:
 
 def main():
     if len(sys.argv) < 2:
-        print("The input JS file is missing.\nUsage : " +
-              sys.argv[0] + " " + __file__ + " <source.js>")
+        print("The input JS file is missing.\n\nUsage :\npython3 %s <source.js>" % (__file__))
         return 1
 
     input_path = sys.argv[1]
@@ -95,8 +91,7 @@ def main():
         code = code.replace("%s%s%s" % (quote_type, unicode, quote_type), "\"%s\"" % (
             unicode.encode().decode("unicode-escape")))
 
-    write_code_file(code.replace("\n", " "), os.path.join(
-        input_path, "..", "output.js"))
+    write_code_file(code.replace("\n", " "), os.path.join("/".join(input_path.split("/")[0:-1]), "output.js"))
     return 0
 
 
