@@ -19,33 +19,71 @@ def write_code_file(code: str, path: str):
     stream.close()
 
 
-def find_strings_array(content: str) -> tuple:
-    """ Get the OSA from the top of the code. """
-    raw_array = re.search(
-        r"var (_0x[a-f0-9]{4})=(\[[\"\\\\u\\x0-9A-F\,]+\]);", content)
-    array_name = raw_array.group(1)
-    raw_array_content = raw_array.group(2).encode().decode("unicode-escape")
-    array = []
+def unquote(code: str) -> str:
     is_string = False
-    string = ""
+    quotes = ("\"", "'", "`")
+    quote_mark = None
 
-    for i in range(len(raw_array_content)):
-        c = raw_array_content[i]
+    for i in range(len(code)):
+        c = code[i]
+        if c == ']' and not is_string:
+            break
 
-        if not is_string and c == '"':
+        if c in quotes and quote_mark is None:
+            quote_mark = c
+
+        if not is_string and c == quote_mark:
             is_string = True
             continue
 
-        if is_string and c == '"':
+        if is_string and c == quote_mark:
+            is_string = False
+            quote_mark = None
+            continue
+
+    return code[i+2:len(code)]
+
+
+def quoter(content: str) -> list:
+    array = []
+    is_string = False
+    string = ""
+    quotes = ("\"", "'", "`")
+    quote_mark = None
+
+    for i in range(len(content)):
+        c = content[i]
+        if c == ']' and not is_string:
+            break
+
+        if c in quotes and quote_mark is None:
+            quote_mark = c
+
+        if not is_string and c == quote_mark:
+            is_string = True
+            continue
+
+        if is_string and c == quote_mark:
             is_string = False
             array.append(string)
             string = ""
+            quote_mark = None
             continue
 
-        if is_string and c != '"':
+        if is_string and c != quote_mark:
             string += c
             continue
 
+    return array
+
+
+def find_strings_array(content: str) -> tuple:
+    """ Get the OSA from the top of the code. """
+    raw_array = re.search(
+        r"var (_0x[a-f0-9]{4})=(\[[\x00-\x7F]+\]);", content)
+    array_name = raw_array.group(1)
+    raw_array_content = raw_array.group(2).encode().decode("unicode-escape")
+    array = quoter(raw_array_content)
     return (array_name, array, raw_array[0])
 
 
@@ -68,7 +106,7 @@ def main():
     array_name, array, match = find_strings_array(code)
 
     # Removes the OSA of the code.
-    code = code.replace(match, '')
+    code = unquote(code)
 
     # Replaces the reference to the OSA to get the refered string's index by the string itself.
     strings_list_occurences = re.compile(r"_0x[0-9a-f]{4}\[(\d+)\]")
