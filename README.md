@@ -3,5 +3,7 @@ JS Desobfuscation is a Python script that desobfuscate JS code and it's time sav
 
 # Usage
 ```bash
+~$ git clone https://github.com/quatrecentquatre-404/js-desobfuscator
+~$ cd js-desobfuscator
 ~$ python3 main.py <source.js>
 ```
