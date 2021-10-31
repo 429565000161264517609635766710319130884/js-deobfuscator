@@ -1,17 +1,17 @@
-# JS Desobuscation
-JS Desobfuscation is a Python script that desobfuscate JS code and it's time saver for you. Although it may not work with high degrees of obfuscation, it's a pretty nice tool to help you even if it's just a bit. You can see some example in the ``examples/`` folder. This idea came to me when I saw an obfuscated script on GitHub. I reversed it for sure lmao. All these examples are extracted from GitHub. There are some references in the script's header.
+# JS Deobfuscation
+JS Deobfuscation is a Python script that deobfuscates JS code and it's time saver for you. Although it may not work with high degrees of obfuscation, it's a pretty nice tool to help you even if it's just a bit. You can see some example in the ``examples/`` folder. This idea came to me when I saw an obfuscated script on GitHub. I reversed it for sure lmao. All these examples are extracted from GitHub. There are some references in the script's header.
 
 # Usage
 ```bash
-~$ git clone https://github.com/quatrecentquatre-404/js-desobfuscator
-~$ cd js-desobfuscator
+~$ git clone https://github.com/quatrecentquatre-404/js-deobfuscator
+~$ cd js-deobfuscator
 ~$ python3 main.py <source.js>
 ```
 
 # Patterns
 
 ### The OSA (obfuscated strings array)
-There are some patterns that can be easily exploited using RegExp to desobfuscate a code.
+There are some patterns that can be easily exploited using RegExp to deobfuscate a code.
 First of all, majore of online obfuscator declare an array at the top of the code which contain many strings. During the runtime, the code refers to this array to get some string. By example :
 ```js
 const strings = ["fs"]
